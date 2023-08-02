@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { getTotalPrice, removeFromCart, updateQuantity } from "./cartSlice";
 
@@ -8,16 +9,23 @@ export function Cart() {
   const  items = useAppSelector((state) => state.cart.items);
   const products = useAppSelector((state) => state.products.products);
   const totalPrice = useAppSelector(getTotalPrice);
+  const checkoutState = useAppSelector((state) => state.cart.checkoutState);
 
   function onQuantityChanged(e: React.FocusEvent<HTMLInputElement>, id: string) {
     const quantity = Number(e.target.value) || 0;
     dispatch(updateQuantity({ id, quantity }));
   }
 
+  const tableClasses = classNames({
+    [styles.table]: true,
+    [styles.checkoutError]: checkoutState === "ERROR",
+    [styles.checkoutLoading]: checkoutState === "LOADING",
+  });
+
   return (
     <main className="page">
       <h1>Shopping Cart</h1>
-      <table className={styles.table}>
+      <table className={tableClasses}>
         <thead>
           <tr>
             <th>Product</th>
