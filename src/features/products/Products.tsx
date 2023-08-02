@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getProducts, Product } from "../../app/api";
 import styles from "./Products.module.css";
 
