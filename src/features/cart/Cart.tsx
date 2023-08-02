@@ -1,6 +1,12 @@
+import { useAppSelector } from "../../app/hooks";
+import { getTotalPrice } from "./cartSlice";
+
 import styles from "./Cart.module.css";
 
 export function Cart() {
+  const  items = useAppSelector((state) => state.cart.items);
+  const products = useAppSelector((state) => state.products.products);
+  const totalPrice = useAppSelector(getTotalPrice);
   return (
     <main className="page">
       <h1>Shopping Cart</h1>
@@ -14,36 +20,28 @@ export function Cart() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Magnifying Glass</td>
+          {
+            Object.entries(items).map(([id, quantity]) => (
+          <tr key="products.id">
+            <td>{products[id].name}</td>
             <td>
-              <input type="text" className={styles.input} defaultValue={21} />
+              <input type="text" className={styles.input} defaultValue={quantity} />
             </td>
-            <td>$44.44</td>
+            <td>${products[id].price}</td>
             <td>
-              <button aria-label="Remove Magnifying Glass from Shopping Cart">
+              <button aria-label={`Remove ${products[id].name} from Shopping Cart`}>
                 X
               </button>
             </td>
           </tr>
-          <tr>
-            <td>Football Cleats</td>
-            <td>
-              <input type="text" className={styles.input} defaultValue={17} />
-            </td>
-            <td>$25.99</td>
-            <td>
-              <button aria-label="Remove Football Cleats from Shopping Cart">
-                X
-              </button>
-            </td>
-          </tr>
+          ))}
+         
         </tbody>
         <tfoot>
           <tr>
             <td>Total</td>
             <td></td>
-            <td className={styles.total}>${0.0}</td>
+            <td className={styles.total}>${totalPrice}</td>
             <td></td>
           </tr>
         </tfoot>
