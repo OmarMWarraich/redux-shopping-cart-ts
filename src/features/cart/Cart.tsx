@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { getTotalPrice, removeFromCart, updateQuantity } from "./cartSlice";
+import { checkout ,getTotalPrice, removeFromCart, updateQuantity } from "./cartSlice";
 
 import styles from "./Cart.module.css";
 
@@ -14,6 +14,11 @@ export function Cart() {
   function onQuantityChanged(e: React.FocusEvent<HTMLInputElement>, id: string) {
     const quantity = Number(e.target.value) || 0;
     dispatch(updateQuantity({ id, quantity }));
+  }
+
+  const onCheckoutClicked = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(checkout());
   }
 
   const tableClasses = classNames({
@@ -69,7 +74,7 @@ export function Cart() {
           </tr>
         </tfoot>
       </table>
-      <form>
+      <form onSubmit={onCheckoutClicked}>
         <button className={styles.button} type="submit">
           Checkout
         </button>
