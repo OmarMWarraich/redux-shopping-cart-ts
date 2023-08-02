@@ -1,12 +1,19 @@
-import { useAppSelector } from "../../app/hooks";
-import { getTotalPrice } from "./cartSlice";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { getTotalPrice, removeFromCart, updateQuantity } from "./cartSlice";
 
 import styles from "./Cart.module.css";
 
 export function Cart() {
+  const dispatch = useAppDispatch();
   const  items = useAppSelector((state) => state.cart.items);
   const products = useAppSelector((state) => state.products.products);
   const totalPrice = useAppSelector(getTotalPrice);
+
+  function onQuantityChanged(e: React.FocusEvent<HTMLInputElement>, id: string) {
+    const quantity = Number(e.target.value) || 0;
+    dispatch(updateQuantity({ id, quantity }));
+  }
+
   return (
     <main className="page">
       <h1>Shopping Cart</h1>
@@ -25,11 +32,19 @@ export function Cart() {
           <tr key="products.id">
             <td>{products[id].name}</td>
             <td>
-              <input type="text" className={styles.input} defaultValue={quantity} />
+              <input 
+                type="text" 
+                className={styles.input} 
+                defaultValue={quantity} 
+                onBlur={(e) => onQuantityChanged(e, id)}
+              />
             </td>
             <td>${products[id].price}</td>
             <td>
-              <button aria-label={`Remove ${products[id].name} from Shopping Cart`}>
+              <button 
+                aria-label={`Remove ${products[id].name} from Shopping Cart`}
+                onClick={() => dispatch(removeFromCart(id))}
+              >
                 X
               </button>
             </td>
