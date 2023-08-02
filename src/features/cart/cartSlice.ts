@@ -1,17 +1,30 @@
-import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
-import { RootState, AppDispatch } from "../../app/store";
+import { createSlice, createAsyncThunk ,createSelector, PayloadAction } from "@reduxjs/toolkit";
+import { checkout, CartItems } from "../../app/api";
+import { RootState } from "../../app/store";
 
 type CheckoutState = "LOADING" | "READY" | "ERROR";
 
 export interface CartState {
     items: { [productID: string]: number };
     checkoutState?: CheckoutState;
+    errorMessage: string;
 }
 
 const initialState: CartState = {
     items: {},
-    checkoutState: "READY"
+    checkoutState: "READY",
+    errorMessage: ""
 };
+
+export const checkoutCart = createAsyncThunk(
+    "cart/checkout",
+    async (_, thunkAPI) => {
+        const state = thunkAPI.getState() as RootState;
+        const items: CartItems = state.cart.items;
+        const response = await checkout(items);
+        return response;
+    }
+);
 
 const cartSlice = createSlice({
     name: "cart",
@@ -39,24 +52,24 @@ const cartSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase("cart/checkout/pending", (state) => {
+            .addCase(checkoutCart.pending, (state) => {
                 state.checkoutState = "LOADING";
             })
-             .addCase("cart/checkout/fulfilled", (state) => {
-                state.items = {};
-                state.checkoutState = "READY";
+             .addCase(checkoutCart.fulfilled, (state, action: PayloadAction<{ success: boolean }>) => {
+                const { success } = action.payload;
+                if (success) {
+                    state.checkoutState = "READY";
+                    state.items = {};
+                } else {
+                    state.checkoutState = "ERROR";
+                }
             })
+            .addCase(checkoutCart.rejected, (state, action) => {
+                state.checkoutState = "ERROR";
+                state.errorMessage = action.error.message || "";
+            });
     }
 });
-
-export function checkout() {
-    return function checkoutThunk(dispatch: AppDispatch) {
-        dispatch({ type: "cart/checkout/pending" });
-        setTimeout(() => {
-            dispatch({ type: "cart/checkout/fulfilled" });
-        }, 1000);
-    }
-}
 
 export const { addToCart, removeFromCart, updateQuantity } = cartSlice.actions;
 

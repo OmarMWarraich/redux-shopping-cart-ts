@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { checkout ,getTotalPrice, removeFromCart, updateQuantity } from "./cartSlice";
+import { checkoutCart ,getTotalPrice, removeFromCart, updateQuantity } from "./cartSlice";
 
 import styles from "./Cart.module.css";
 
@@ -10,6 +10,7 @@ export function Cart() {
   const products = useAppSelector((state) => state.products.products);
   const totalPrice = useAppSelector(getTotalPrice);
   const checkoutState = useAppSelector((state) => state.cart.checkoutState);
+  const errorMessage = useAppSelector((state) => state.cart.errorMessage);
 
   function onQuantityChanged(e: React.FocusEvent<HTMLInputElement>, id: string) {
     const quantity = Number(e.target.value) || 0;
@@ -18,7 +19,7 @@ export function Cart() {
 
   const onCheckoutClicked = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(checkout());
+    dispatch(checkoutCart());
   }
 
   const tableClasses = classNames({
@@ -42,7 +43,7 @@ export function Cart() {
         <tbody>
           {
             Object.entries(items).map(([id, quantity]) => (
-          <tr key="products.id">
+          <tr>
             <td>{products[id].name}</td>
             <td>
               <input 
@@ -58,9 +59,9 @@ export function Cart() {
                 aria-label={`Remove ${products[id].name} from Shopping Cart`}
                 onClick={() => dispatch(removeFromCart(id))}
               >
-                X
-              </button>
-            </td>
+              X
+            </button>
+          </td>
           </tr>
           ))}
          
@@ -75,6 +76,9 @@ export function Cart() {
         </tfoot>
       </table>
       <form onSubmit={onCheckoutClicked}>
+        {checkoutState === "ERROR" && errorMessage ? (
+          <p className={styles.error}>{errorMessage}</p>
+        ) : null}
         <button className={styles.button} type="submit">
           Checkout
         </button>
