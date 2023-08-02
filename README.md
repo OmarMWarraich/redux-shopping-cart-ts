@@ -99,7 +99,7 @@ Redux Shopping Cart is a project that is built using React, Redux and TypeScript
 
 ## 🚀 Live Demo <a name="live-demo"></a>
 
-- Coming Soon
+- [Live Demo Link](https://main.d1dg2ven9t6ujw.amplifyapp.com/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

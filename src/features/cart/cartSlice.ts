@@ -75,15 +75,6 @@ export const { addToCart, removeFromCart, updateQuantity } = cartSlice.actions;
 
 export default cartSlice.reducer;
 
-export function getNumItems(state: RootState){
-    console.log("Calling Num Items.")
-    let numItems = 0;
-    for (let id in state.cart.items){
-        numItems += state.cart.items[id];
-    }
-    return numItems;
-}
-
 export const getMemoizedNumItems = createSelector(
     (state: RootState) => state.cart.items,
     (items) => {
