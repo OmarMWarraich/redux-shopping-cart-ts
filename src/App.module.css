@@ -16,6 +16,18 @@
   padding-right: 1em;
 }
 
-:global .page {
+.page {
   text-align: center;
+}
+
+/* apply media query */
+
+@media (max-width: 600px) {
+  .header {
+    height: 3em;
+  }
+
+  .store {
+    width: 100%;
+  }
 }

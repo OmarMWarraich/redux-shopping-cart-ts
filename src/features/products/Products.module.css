@@ -1,7 +1,7 @@
 .products {
   list-style-type: none;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjusting columns for responsiveness */
   grid-gap: 1em;
   padding: 0;
   margin: 2em;
@@ -29,4 +29,12 @@
 
 .caption {
   font-size: 0.6em;
+}
+
+/* Media query for screens smaller than 768px */
+@media screen and (max-width: 768px) {
+  .products {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjusting columns for smaller screens */
+    margin: 1em;
+  }
 }

@@ -29,7 +29,7 @@ export function Cart() {
   });
 
   return (
-    <main className="page">
+    <main className={styles.page}>
       <h1>Shopping Cart</h1>
       <table className={tableClasses}>
         <thead>
